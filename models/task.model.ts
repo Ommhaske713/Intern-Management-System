@@ -2,8 +2,8 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ITask extends Document {
   batchId: mongoose.Types.ObjectId;
-  assignedBy: mongoose.Types.ObjectId; // Mentor
-  assignedTo?: mongoose.Types.ObjectId; // Optional: If null = Task for entire Batch. If set = Task for specific Intern.
+  assignedBy: mongoose.Types.ObjectId;
+  assignedTo?: mongoose.Types.ObjectId;
   
   title: string;
   description: string;
@@ -28,7 +28,7 @@ const TaskSchema: Schema<ITask> = new Schema(
     assignedTo: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      default: null, // Default null implies broadcast to entire batch
+      default: null,
     },
     title: {
       type: String,
@@ -43,7 +43,7 @@ const TaskSchema: Schema<ITask> = new Schema(
       required: true,
     },
     deadline: {
-      type: Date, // Optional deadline
+      type: Date,
     },
   },
   {
