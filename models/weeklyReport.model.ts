@@ -8,7 +8,7 @@ export interface IWeeklyReport extends Document {
   challengesFaced: string;
   learnings: string;
   submittedAt: Date;
-  status?: string; // PENDING | REVIEWED
+  status?: string;
 }
 
 const WeeklyReportSchema: Schema<IWeeklyReport> = new Schema(
@@ -53,7 +53,7 @@ const WeeklyReportSchema: Schema<IWeeklyReport> = new Schema(
   }
 );
 
-// Compound index to ensure one report per intern per batch per week
+
 WeeklyReportSchema.index({ batchId: 1, internId: 1, weekNumber: 1 }, { unique: true });
 
 const WeeklyReport: Model<IWeeklyReport> =
