@@ -38,7 +38,7 @@ const UserSchema: Schema<IUser> = new Schema(
     },
     password: {
       type: String,
-      select: false, // Security: Don't return password by default
+      select: false,
     },
     role: {
       type: String,
