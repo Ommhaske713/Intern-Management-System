@@ -8,12 +8,13 @@ export enum BatchStatus {
 
 export interface IBatch extends Document {
   companyId: mongoose.Types.ObjectId;
-  programDefinitionId: mongoose.Types.ObjectId;
+  programDefinitionId?: mongoose.Types.ObjectId;
+  name: string;
   mentorIds: mongoose.Types.ObjectId[];
   internIds: mongoose.Types.ObjectId[];
   startDate: Date;
   endDate?: Date;
-  durationInWeeks: number;
+  durationInWeeks?: number;
   currentStatus: BatchStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -29,7 +30,12 @@ const BatchSchema: Schema<IBatch> = new Schema(
     programDefinitionId: {
       type: Schema.Types.ObjectId,
       ref: 'ProgramDefinition',
+      required: false,
+    },
+    name: {
+      type: String,
       required: true,
+      trim: true,
     },
     mentorIds: [
       {
@@ -61,6 +67,10 @@ const BatchSchema: Schema<IBatch> = new Schema(
     timestamps: true,
   }
 );
+
+if (process.env.NODE_ENV !== 'production' && mongoose.models.Batch) {
+  delete mongoose.models.Batch;
+}
 
 const Batch: Model<IBatch> = mongoose.models.Batch || mongoose.model<IBatch>('Batch', BatchSchema);
 

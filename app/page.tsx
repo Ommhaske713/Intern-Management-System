@@ -18,63 +18,42 @@ export default function Home() {
         </h1>
       </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Authentication{" "}
+      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-2 lg:text-left gap-8">
+        <div className="group rounded-lg border border-gray-200 px-5 py-4 transition-colors hover:border-blue-300 hover:bg-blue-50/50">
+          <h2 className={`mb-3 text-2xl font-semibold text-blue-700`}>
+            Intern & Mentor Portal{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Test the Login functionality securely.
+          <p className={`m-0 max-w-[30ch] text-sm opacity-70 mb-4`}>
+            Access your tasks, submissions, and feedback.
           </p>
-          <div className="mt-4">
-             <Link href="/api/auth/signin" className="text-blue-500 hover:underline">
-               Sign In Page
+          <div className="flex gap-4">
+             <Link href="/login" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">
+               Login to Portal
              </Link>
           </div>
         </div>
 
-        <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Dashboard{" "}
+        <div className="group rounded-lg border border-gray-200 px-5 py-4 transition-colors hover:border-gray-800 hover:bg-gray-100">
+          <h2 className={`mb-3 text-2xl font-semibold text-gray-800`}>
+            HR & Admin Console{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            View the Protected Intern/Mentor Dashboard.
+          <p className={`m-0 max-w-[30ch] text-sm opacity-70 mb-4`}>
+            Manage batches, users, and company settings.
           </p>
-           <div className="mt-4">
-             <Link href="/dashboard" className="text-blue-500 hover:underline">
-               Go to Dashboard
+           <div className="flex gap-4">
+             <Link href="/admin/login" className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 font-medium">
+               Admin Login
+             </Link>
+             <Link href="/register" className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 font-medium">
+               Register Company
              </Link>
           </div>
-        </div>
-
-        <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            API Health{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Check database connection (requires implementing health route).
-          </p>
-        </div>
-
-        <div className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30">
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Environment{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Current Mode: <span className="font-mono font-bold">{process.env.NODE_ENV}</span>
-          </p>
         </div>
       </div>
     </main>

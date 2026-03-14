@@ -4,6 +4,7 @@ export enum UserRole {
   ADMIN = 'ADMIN',
   MENTOR = 'MENTOR',
   INTERN = 'INTERN',
+  HR = "HR",
 }
 
 export interface IUser extends Document {
@@ -13,6 +14,9 @@ export interface IUser extends Document {
   password?: string;
   role: UserRole;
   isActive: boolean;
+  inviteToken?: string;
+  inviteTokenExpiry?: Date;
+  hasCompletedOnboarding: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +52,18 @@ const UserSchema: Schema<IUser> = new Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    inviteToken: {
+      type: String,
+      select: false,
+    },
+    inviteTokenExpiry: {
+      type: Date,
+      select: false,
+    },
+    hasCompletedOnboarding: {
+      type: Boolean,
+      default: false,
     },
   },
   {
