@@ -13,7 +13,6 @@ export async function GET(req: Request) {
 
     await dbConnect();
 
-    // Fetch batches for this company
     const batches = await Batch.find({ companyId: (session.user as any).companyId })
       .sort({ createdAt: -1 })
       .populate('mentorIds', 'name email role')
