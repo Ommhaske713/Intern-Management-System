@@ -16,12 +16,10 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    // Find user with valid token and check expiry
     const user = await User.findOne({
       inviteToken: token,
-      inviteTokenExpiry: { $gt: new Date() }, // Expiry must be in the future
+      inviteTokenExpiry: { $gt: new Date() },
     }).select('+inviteToken +inviteTokenExpiry'); 
-    // We need +select because these fields are hidden by default
 
     if (!user) {
       return NextResponse.json(
@@ -30,15 +28,13 @@ export async function POST(req: Request) {
       );
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Update User
     user.password = hashedPassword;
-    user.inviteToken = undefined; // Clear token
+    user.inviteToken = undefined;
     user.inviteTokenExpiry = undefined;
-    user.isActive = true; // Activate user
+    user.isActive = true;
     user.hasCompletedOnboarding = true;
 
     await user.save();

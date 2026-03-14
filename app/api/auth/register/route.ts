@@ -14,8 +14,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Email Domain Validation Logic
-    // List of common public email providers to block for company registration
     const publicDomains = [
       'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 
       'aol.com', 'icloud.com', 'protonmail.com', 'zoho.com', 
@@ -30,23 +28,19 @@ export async function POST(req: Request) {
        }, { status: 400 });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json({ error: 'User with this email already exists' }, { status: 400 });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create Company
     const company = await Company.create({
       name: companyName,
-      industryDomain: industryDomain || 'Technology', // Default if not provided
+      industryDomain: industryDomain || 'Technology',
       isActive: true,
     });
 
-    // Create Admin User
     const user = await User.create({
       companyId: company._id,
       name,
