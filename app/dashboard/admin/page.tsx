@@ -11,11 +11,34 @@ export default function AdminDashboard() {
     batches: 0,
     mentors: 0,
     interns: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    submissions: 0,
+    recentActivity: [] as any[]
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      setStats({ batches: 3, mentors: 5, interns: 24 }); 
+      try {
+        const res = await fetch('/api/dashboard/admin');
+        if (res.ok) {
+            const data = await res.json();
+            setStats({
+                batches: data.batches.total,
+                mentors: data.users.mentors,
+                interns: data.users.interns,
+                totalTasks: data.tasks.total,
+                completedTasks: data.tasks.completed,
+                submissions: data.submissions.total,
+                recentActivity: data.recentActivity || []
+            });
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard stats", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchStats();
   }, []);
@@ -34,7 +57,7 @@ export default function AdminDashboard() {
             <Layout className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.batches}</div>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.batches}</div>
           </CardContent>
         </Card>
         <Card>
@@ -43,7 +66,7 @@ export default function AdminDashboard() {
             <Award className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.mentors}</div>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.mentors}</div>
           </CardContent>
         </Card>
         <Card>
@@ -52,7 +75,16 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.interns}</div>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.interns}</div>
+          </CardContent>
+        </Card>
+         <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tasks Completed</CardTitle>
+            <Users className="h-4 w-4 text-green-500" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.completedTasks} <span className="text-sm font-normal text-muted-foreground">/ {stats.totalTasks}</span></div>
           </CardContent>
         </Card>
       </div>
@@ -79,13 +111,33 @@ export default function AdminDashboard() {
 
         <Card className="col-span-2">
           <CardHeader>
-            <CardTitle>Recent Batches</CardTitle>
-            <CardDescription>Latest cohorts added to the system</CardDescription>
+            <CardTitle>Recent Submissions</CardTitle>
+            <CardDescription>Latest work submitted by interns</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-sm text-muted-foreground text-center py-8">
-               Visit the <Link href="/dashboard/batches" className="text-blue-500 underline">Batches page</Link> to view detailed lists.
-            </div>
+            {loading ? (
+                <div>Loading...</div>
+            ) : stats.recentActivity.length === 0 ? (
+                <div className="text-sm text-muted-foreground text-center py-8">
+                   No recent submissions found.
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {stats.recentActivity.map((sub, i) => (
+                        <div key={i} className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0">
+                            <div>
+                                <p className="text-sm font-medium">{sub.taskId?.title || 'Unknown Task'}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    by {sub.internId?.name} • {new Date(sub.submittedAt).toLocaleDateString()}
+                                </p>
+                            </div>
+                            <Link href={sub.proofLink} target="_blank" className="text-xs text-blue-500 hover:underline">
+                                View
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>

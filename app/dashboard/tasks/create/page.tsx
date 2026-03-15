@@ -22,6 +22,8 @@ export default function CreateTaskPage() {
     weekNumber: 1,
     batchId: "",
     assignedTo: "all",
+    priority: "MEDIUM",
+    requiredProofType: "GITHUB_REPOSITORY",
   });
 
   useEffect(() => {
@@ -61,6 +63,8 @@ export default function CreateTaskPage() {
         batchId: formData.batchId,
         weekNumber: formData.weekNumber,
         assignedTo: formData.assignedTo === "all" ? null : formData.assignedTo,
+        priority: formData.priority,
+        requiredProofType: formData.requiredProofType,
       };
       if (formData.deadline) payload.deadline = formData.deadline;
 
@@ -125,6 +129,38 @@ export default function CreateTaskPage() {
                   {intern.name || intern.email || "Intern"}
                 </option>
               ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-sm font-medium mb-1">Priority</label>
+             <select
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={formData.priority}
+              onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+              required
+            >
+              <option value="LOW">Low</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Required Proof Type</label>
+             <select
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={formData.requiredProofType}
+              onChange={(e) => setFormData({ ...formData, requiredProofType: e.target.value })}
+              required
+            >
+              <option value="GITHUB_REPOSITORY">GitHub Repository</option>
+              <option value="DEPLOYED_URL">Deployed URL</option>
+              <option value="FIGMA_LINK">Figma Link</option>
+              <option value="PDF_DOCUMENT">PDF Document</option>
+              <option value="GOOGLE_DOC">Google Doc</option>
+              <option value="OTHER">Other</option>
             </select>
           </div>
         </div>

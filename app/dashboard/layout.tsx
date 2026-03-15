@@ -11,6 +11,7 @@ import {
   FileText,
   PlusCircle,
   BarChart,
+  Settings,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -82,6 +83,10 @@ export default function DashboardLayout({
                 <BarChart className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 Reports
               </Link>
+              <Link href="/dashboard/admin/settings" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+                <Settings className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+                Settings
+              </Link>
             </>
           )}
 
@@ -98,6 +103,10 @@ export default function DashboardLayout({
                 <ClipboardList className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 Evaluations
               </Link>
+              <Link href="/dashboard/mentor/reports" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+                <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+                Intern Reports
+              </Link>
              </>
           )}
 
@@ -109,6 +118,10 @@ export default function DashboardLayout({
               <Link href="/dashboard/submissions" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
                 <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 My Submissions
+              </Link>
+              <Link href="/dashboard/intern/reports" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+                <ClipboardList className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+                Weekly Reports
               </Link>
              </>
           )}

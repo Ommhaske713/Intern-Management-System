@@ -1,5 +1,15 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Common Next.js 14+ config
+  experimental: {
+    serverComponentsExternalPackages: ['pdfkit'],
+  },
+  webpack: (config) => {
+    config.externals.push({
+      'utf-8-validate': 'commonjs utf-8-validate',
+      'bufferutil': 'commonjs bufferutil',
+    });
+    return config;
+  },
 };
 
 export default nextConfig;
