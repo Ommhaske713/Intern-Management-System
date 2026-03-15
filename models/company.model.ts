@@ -5,6 +5,9 @@ export interface ICompany extends Document {
   industryDomain: string;
   internshipApproach: string;
   isActive: boolean;
+  programDirectorName?: string;
+  programDirectorSignatureUrl?: string;
+  companyLogoUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,6 +29,15 @@ const CompanySchema: Schema<ICompany> = new Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    programDirectorName: {
+        type: String,
+    },
+    programDirectorSignatureUrl: {
+        type: String,
+    },
+    companyLogoUrl: {
+        type: String,
     },
   },
   {
