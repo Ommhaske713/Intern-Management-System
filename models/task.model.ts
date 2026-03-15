@@ -1,4 +1,19 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { ProofOfWorkType } from './program.model';
+
+export enum TaskPriority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+}
+
+export enum TaskStatus {
+  ASSIGNED = 'ASSIGNED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  SUBMITTED = 'SUBMITTED',
+  COMPLETED = 'COMPLETED',
+  OVERDUE = 'OVERDUE',
+}
 
 export interface ITask extends Document {
   batchId: mongoose.Types.ObjectId;
@@ -8,7 +23,11 @@ export interface ITask extends Document {
   title: string;
   description: string;
   weekNumber: number;
-  deadline?: Date; 
+  deadline?: Date;
+  priority: TaskPriority;
+  requiredProofType: ProofOfWorkType;
+  status: TaskStatus;
+  
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +63,22 @@ const TaskSchema: Schema<ITask> = new Schema(
     },
     deadline: {
       type: Date,
+    },
+    priority: {
+      type: String,
+      enum: Object.values(TaskPriority),
+      default: TaskPriority.MEDIUM,
+      required: true,
+    },
+    requiredProofType: {
+      type: String,
+      enum: Object.values(ProofOfWorkType),
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(TaskStatus),
+      default: TaskStatus.ASSIGNED,
     },
   },
   {

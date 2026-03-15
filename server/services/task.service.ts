@@ -9,9 +9,18 @@ export class TaskService {
     return await task.save();
   }
 
-  async getTasksForUser(userId: string, role: string): Promise<ITask[]> {
+  async getTasksForUser(userId: string, role: string, filters: { assignedTo?: string } = {}): Promise<ITask[]> {
     if (role === UserRole.ADMIN || role === UserRole.MENTOR) {
-      return await Task.find()
+      const query: any = {};
+      
+      if (filters.assignedTo) {
+        query.$or = [
+            { assignedTo: filters.assignedTo },
+            
+        ];
+      }
+      
+      return await Task.find(query)
         .sort({ createdAt: -1 })
         .populate('assignedTo', 'name email')
         .populate('assignedBy', 'name');
