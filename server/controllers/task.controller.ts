@@ -39,16 +39,36 @@ export class TaskController {
       if (!session) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
-      
+
       const user = await User.findById(session.user.id);
       if (!user) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
 
-      const tasks = await taskService.getTasksForUser(user._id.toString(), user.role);
+      const url = new URL(req.url);
+      const assignedTo = url.searchParams.get('assignedTo');
+
+      const tasks = await taskService.getTasksForUser(
+        user._id.toString(), 
+        user.role, 
+        { assignedTo: assignedTo || undefined }
+      );
       return NextResponse.json(tasks, { status: 200 });
     } catch (error: any) {
       console.error('Error fetching tasks:', error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+  }
+
+  async getTaskById(req: Request, { params }: { params: { id: string } }) {
+    try {
+      await dbConnect();
+      const task = await taskService.getTaskById(params.id);
+      if (!task) {
+        return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+      }
+      return NextResponse.json(task);
+    } catch (error: any) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
   }
