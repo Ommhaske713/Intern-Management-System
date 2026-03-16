@@ -3,7 +3,8 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface ICertificate extends Document {
   internId: mongoose.Types.ObjectId;
   batchId: mongoose.Types.ObjectId;
-  evaluationId: mongoose.Types.ObjectId;
+  evaluationId?: mongoose.Types.ObjectId;
+  taskId?: mongoose.Types.ObjectId; 
   issuedAt: Date;
   verificationCode: string;
 }
@@ -23,7 +24,12 @@ const CertificateSchema: Schema<ICertificate> = new Schema(
     evaluationId: {
       type: Schema.Types.ObjectId,
       ref: 'Evaluation',
-      required: true,
+      required: false, 
+    },
+    taskId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Task',
+        required: false
     },
     issuedAt: {
       type: Date,
@@ -37,6 +43,10 @@ const CertificateSchema: Schema<ICertificate> = new Schema(
   },
   { timestamps: true }
 );
+
+if (mongoose.models.Certificate) {
+  delete mongoose.models.Certificate;
+}
 
 export default (mongoose.models.Certificate as Model<ICertificate>) ||
   mongoose.model<ICertificate>('Certificate', CertificateSchema);

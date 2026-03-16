@@ -7,8 +7,47 @@ import User from '@/models/user.model';
 import Batch from '@/models/batch.model';
 import Evaluation from '@/models/evaluation.model';
 import Company from '@/models/company.model';
+import { sendCertificateEmail } from '@/lib/email';
+import Task, { TaskPriority } from '@/models/task.model';
 
 export class CertificateService {
+  async issueCertificateForTask(taskId: string, internId?: string): Promise<ICertificate | null> {
+    const task = await Task.findById(taskId);
+    if (!task || task.priority !== TaskPriority.FINAL) {
+      return null;
+    }
+
+    const targetInternId = internId || task.assignedTo?.toString();
+    const batchId = task.batchId?.toString();
+
+    if (!targetInternId || !batchId) return null;
+
+    const existing = await Certificate.findOne({ internId: targetInternId, batchId });
+    if (existing) return existing;
+    
+    const verificationCode = crypto.randomBytes(8).toString('hex').toUpperCase();
+    
+    const certificate = new Certificate({
+      internId: targetInternId,
+      batchId,
+      taskId,
+      verificationCode, 
+    });
+    
+    const savedCert = await certificate.save();
+    
+    try {
+        const intern = await User.findById(internId);
+        if (intern && intern.email) {
+            const pdfBuffer = await this.generateCertificatePDF(savedCert._id);
+            await sendCertificateEmail(intern.email, intern.name, pdfBuffer);
+        }
+    } catch (error) {
+       console.error("Certificate email failed", error);
+    }
+    return savedCert;
+  }
+
   async issueCertificate(internId: string, batchId: string, evaluationId: string): Promise<ICertificate> {
     const existing = await Certificate.findOne({ internId, batchId });
     if (existing) return existing;
@@ -30,7 +69,19 @@ export class CertificateService {
       verificationCode, 
     });
     
-    return await certificate.save();
+    const savedCert = await certificate.save();
+
+    try {
+        const intern = await User.findById(internId);
+        if (intern && intern.email) {
+            const pdfBuffer = await this.generateCertificatePDF(savedCert._id);
+            await sendCertificateEmail(intern.email, intern.name, pdfBuffer);
+        }
+    } catch (error) {
+       console.error("Certificate email failed", error);
+    }
+    
+    return savedCert;
   }
 
   async generateCertificatePDF(certificateId: string): Promise<Buffer> {

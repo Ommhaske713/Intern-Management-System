@@ -8,6 +8,29 @@ import Certificate from '@/models/certificate.model';
 
 export class CertificateController {
   
+  async getCertificate(req: Request) {
+    try {
+      await dbConnect();
+      const session = await getServerSession(authOptions);
+      if (!session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+
+      const certificate = await Certificate.findOne({ internId: session.user.id })
+        .populate('taskId', 'title')
+        .populate('batchId', 'name')
+        .sort({ updatedAt: -1 });
+
+      if (!certificate) {
+        return NextResponse.json(null);
+      }
+
+      return NextResponse.json(certificate, { status: 200 });
+    } catch (error: any) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+  }
+
   async issueCertificate(req: Request) {
     try {
       await dbConnect();
