@@ -145,6 +145,7 @@ export default function CreateTaskPage() {
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
               <option value="HIGH">High</option>
+              <option value="FINAL">Final Project</option>
             </select>
           </div>
           <div>

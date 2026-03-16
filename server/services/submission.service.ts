@@ -1,6 +1,6 @@
-import Submission, { ReviewStatus } from '../../models/submission.model';
-import Task, { TaskStatus } from '../../models/task.model';
-import { ISubmission } from '../../models/submission.model';
+import { certificateService } from './certificate.service';
+import Task, { TaskPriority, TaskStatus } from '@/models/task.model';
+import Submission, { ISubmission, ReviewStatus } from '@/models/submission.model';
 
 export class SubmissionService {
   
@@ -48,9 +48,18 @@ export class SubmissionService {
 
       if (status === ReviewStatus.APPROVED) {
 
-        await Task.findByIdAndUpdate(taskId, { status: TaskStatus.COMPLETED });
-      } else if (status === ReviewStatus.REWORK) {
+        const updatedTask = await Task.findByIdAndUpdate(taskId, { status: TaskStatus.COMPLETED });
         
+        if (updatedTask && updatedTask.priority === TaskPriority.FINAL) {
+            import('./certificate.service').then(m => {
+                const internId = (submission.internId as any)._id || submission.internId;
+                m.certificateService.issueCertificateForTask(taskId.toString(), internId.toString())
+                    .catch(err => console.error("Auto-issue certificate failed", err));
+            });
+        }
+
+      } else if (status === ReviewStatus.REWORK) {
+
         await Task.findByIdAndUpdate(taskId, { status: TaskStatus.IN_PROGRESS });
       }
     }

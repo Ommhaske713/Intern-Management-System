@@ -113,6 +113,40 @@ export const sendEvaluationNotificationEmail = async (
   }
 };
 
+export const sendTaskAssignedEmail = async (
+  internEmail: string,
+  internName: string,
+  taskTitle: string,
+  taskLink: string
+) => {
+  const transporter = createTransporter();
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: internEmail,
+    subject: `New Task Assigned: ${taskTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+        <h2 style="color: #0070f3;">New Task Assigned</h2>
+        <p>Hello ${internName},</p>
+        <p>A new task <strong>"${taskTitle}"</strong> has been assigned to you.</p>
+        <p>Please review the details and start working on it.</p>
+        
+        <a href="${taskLink}" style="display: inline-block; background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0;">View Task</a>
+      </div>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Task notification sent to ${internEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Error sending task notification:', error);
+    return false;
+  }
+};
+
 export const sendTaskGradedNotification = async (
   internEmail: string,
   internName: string,
@@ -121,8 +155,8 @@ export const sendTaskGradedNotification = async (
   feedback?: string
 ) => {
   const transporter = createTransporter();
-  
-  const statusColor = status === 'APPROVED' ? '#10B981' : '#F59E0B';
+  const statusColor = status === 'APPROVED' ? '#10b981' : '#ef4444';
+  const statusText = status === 'APPROVED' ? 'Approved' : 'Needs Rework';
 
   const mailOptions = {
     from: process.env.EMAIL_FROM,
@@ -130,16 +164,17 @@ export const sendTaskGradedNotification = async (
     subject: `Task Review Update: ${taskTitle}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-        <h2 style="color: #0070f3;">Task Submission Reviewed</h2>
+        <h2 style="color: #0070f3;">Task Submitted Review</h2>
         <p>Hello ${internName},</p>
-        <p>Your submission for <strong>${taskTitle}</strong> has been reviewed.</p>
+        <p>Your submission for <strong>"${taskTitle}"</strong> has been reviewed.</p>
         
-        <div style="padding: 15px; border-left: 4px solid ${statusColor}; background: #f9f9f9; margin: 20px 0;">
-           <p style="margin: 0; font-weight: bold; color: ${statusColor};">Status: ${status}</p>
-           ${feedback ? `<p style="margin: 10px 0 0 0;">Feedback: "${feedback}"</p>` : ''}
+        <div style="background-color: #f8f9fa; border-left: 4px solid ${statusColor}; padding: 15px; margin: 20px 0;">
+           <h3 style="margin-top: 0; color: ${statusColor};">${statusText}</h3>
+           ${feedback ? `<p><strong>Feedback:</strong> ${feedback}</p>` : ''}
         </div>
-
-        <p>Log in to your dashboard to view details or resubmit if required.</p>
+        
+        <p>Please log in to your dashboard to view full details.</p>
+        <a href="${process.env.NEXTAUTH_URL}/dashboard" style="display: inline-block; background-color: #0070f3; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0;">Go to Dashboard</a>
       </div>
     `,
   };
@@ -152,4 +187,42 @@ export const sendTaskGradedNotification = async (
     console.error('Error sending task graded notification:', error);
     return false;
   }
+};
+
+export const sendCertificateEmail = async (
+    internEmail: string,
+    internName: string,
+    pdfBuffer: Buffer
+) => {
+    const transporter = createTransporter();
+    
+    const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: internEmail,
+        subject: 'Your Internship Certificate',
+        html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+                <h2 style="color: #0070f3;">Congratulations, ${internName}!</h2>
+                <p>We are pleased to inform you that you have successfully completed the internship program.</p>
+                <p>Please find your official Certificate of Completion attached to this email.</p>
+                <p>We wish you all the best in your future endeavors!</p>
+            </div>
+        `,
+        attachments: [
+            {
+                filename: `Internship_Certificate_${internName.replace(/\s+/g, '_')}.pdf`,
+                content: pdfBuffer,
+                contentType: 'application/pdf'
+            }
+        ]
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Certificate email sent to ${internEmail}`);
+        return true;
+    } catch (error) {
+        console.error('Error sending certificate email:', error);
+        return false;
+    }
 };

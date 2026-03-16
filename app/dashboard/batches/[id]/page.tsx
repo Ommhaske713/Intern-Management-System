@@ -60,6 +60,31 @@ export default function BatchDetailsPage() {
     }
   };
 
+  const handleRemoveUser = async (userId: string, role: string) => {
+    if (!confirm("Are you sure you want to remove this user from the batch?")) return;
+    
+    try {
+      const res = await fetch(`/api/batches/${params.id}/remove-user`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          role,
+        }),
+      });
+
+      if (res.ok) {
+        toast.success("User removed successfully");
+        fetchBatch();
+      } else {
+        const err = await res.json();
+        toast.error(err.error || "Failed to remove user");
+      }
+    } catch (error) {
+      toast.error("Network error");
+    }
+  };
+
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Submitting form:", { userRoleToAdd, newUserEmail, newUserName });
@@ -145,7 +170,17 @@ export default function BatchDetailsPage() {
                               <p className="text-xs text-gray-500">{user.email}</p>
                            </div>
                         </div>
-                        <Button variant="ghost" size="sm"><Mail className="h-4 w-4" /></Button>
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm"><Mail className="h-4 w-4" /></Button>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                onClick={() => handleRemoveUser(user._id, "INTERN")}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -180,7 +215,17 @@ export default function BatchDetailsPage() {
                               <p className="text-xs text-gray-500">{user.email}</p>
                            </div>
                         </div>
-                        <Button variant="ghost" size="sm"><Mail className="h-4 w-4" /></Button>
+                        <div className="flex items-center gap-2">
+                            <Button variant="ghost" size="sm"><Mail className="h-4 w-4" /></Button>
+                            <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                onClick={() => handleRemoveUser(user._id, "MENTOR")}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </div>
                       </div>
                     ))}
                   </div>

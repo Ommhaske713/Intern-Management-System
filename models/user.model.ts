@@ -13,6 +13,9 @@ export interface IUser extends Document {
   email: string;
   password?: string;
   role: UserRole;
+  image?: string;
+  bio?: string;
+  skills?: string[];
   isActive: boolean;
   inviteToken?: string;
   inviteTokenExpiry?: Date;
@@ -43,6 +46,15 @@ const UserSchema: Schema<IUser> = new Schema(
     password: {
       type: String,
       select: false,
+    },
+    image: {
+      type: String,
+    },
+    bio: {
+      type: String,
+    },
+    skills: {
+      type: [String],
     },
     role: {
       type: String,

@@ -12,6 +12,9 @@ import {
   PlusCircle,
   BarChart,
   Settings,
+  User,
+  TestTube,
+  CheckCircle,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -49,9 +52,13 @@ export default function DashboardLayout({
       <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col fixed h-full z-10">
         <div className="p-6 border-b border-gray-200 dark:border-gray-700">
           <h1 className="text-xl font-bold tracking-tight">Intern Platform</h1>
-          <div className="mt-4 flex items-center space-x-3">
-             <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
-                {session.user.name?.[0] || "U"}
+          <div className="mt-4 flex items-center space-x-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-lg transition-colors" onClick={() => router.push('/dashboard/profile')}>
+             <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold overflow-hidden">
+                {session.user.image ? (
+                   <img src={session.user.image} alt="Profile" className="h-full w-full object-cover" />
+                ) : (
+                   session.user.name?.[0] || "U"
+                )}
              </div>
              <div className="overflow-hidden">
                 <p className="text-sm font-medium truncate">{session.user.name}</p>
@@ -66,6 +73,11 @@ export default function DashboardLayout({
             Dashboard
           </Link>
           
+          <Link href="/dashboard/profile" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+            <User className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+            My Profile
+          </Link>
+
           {role === "ADMIN" && (
             <>
               <div className="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
@@ -85,7 +97,7 @@ export default function DashboardLayout({
               </Link>
               <Link href="/dashboard/admin/settings" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
                 <Settings className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
-                Settings
+                System Settings
               </Link>
             </>
           )}
@@ -95,17 +107,21 @@ export default function DashboardLayout({
               <div className="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                 Mentorship
               </div>
+              <Link href="/dashboard/mentor/submissions" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+                <CheckCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+                Review Submissions
+              </Link>
               <Link href="/dashboard/tasks/create" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
                 <PlusCircle className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 Assign Task
               </Link>
               <Link href="/dashboard/evaluations" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
                 <ClipboardList className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
-                Evaluations
+                Final Evaluations
               </Link>
               <Link href="/dashboard/mentor/reports" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
                 <FileText className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
-                Intern Reports
+                Weekly Reports
               </Link>
              </>
           )}
@@ -125,6 +141,14 @@ export default function DashboardLayout({
               </Link>
              </>
           )}
+
+          <div className="pt-4 pb-2 px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Development
+          </div>
+          <Link href="/dashboard/demo" className="flex items-center px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg group">
+            <TestTube className="mr-3 h-5 w-5 text-gray-400 group-hover:text-blue-600" />
+            Feature Demo
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
