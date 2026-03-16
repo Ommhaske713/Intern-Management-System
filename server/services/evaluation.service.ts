@@ -4,6 +4,7 @@ import WeeklyReport from '@/models/weeklyReport.model';
 import Batch from '@/models/batch.model';
 import User from '@/models/user.model';
 import mongoose from 'mongoose';
+import { sendEvaluationNotificationEmail } from '@/lib/email';
 
 interface InternSummary {
   internId: string;
@@ -45,7 +46,7 @@ export class EvaluationService {
           internId: intern._id,
           batchId: batch._id
         });
-        
+
         const evaluation = await Evaluation.findOne({ 
           internId: intern._id, 
           batchId: batch._id 
@@ -72,7 +73,24 @@ export class EvaluationService {
       throw new Error("Intern has already been evaluated for this batch.");
     }
     const evaluation = new Evaluation(data);
-    return await evaluation.save();
+    const savedEval = await evaluation.save();
+
+    if (savedEval.evaluationCompleted) {
+        try {
+            const intern = await User.findById(data.internId).select('name email');
+            if (intern && intern.email) {
+                await sendEvaluationNotificationEmail(
+                    intern.email,
+                    intern.name,
+                    `${process.env.NEXTAUTH_URL}/dashboard/intern`
+                );
+            }
+        } catch (error) {
+            console.error("Failed to send evaluation notification:", error);
+        }
+    }
+
+    return savedEval;
   }
   
   async getEvaluation(internId: string, batchId: string): Promise<IEvaluation | null> {

@@ -85,18 +85,6 @@ export class EvaluationController {
         evaluatedAt: new Date(),
         evaluationCompleted: true,
       });
-      
-      const intern = await User.findById(body.internId);
-      if (intern && intern.email) {
-          const evaluationLink = `${process.env.NEXTAUTH_URL}/dashboard/evaluations/${evaluation._id}`;
-          const dashboardLink = `${process.env.NEXTAUTH_URL}/dashboard/intern`;
-          
-          sendEvaluationNotificationEmail(
-            intern.email,
-            intern.name,
-            dashboardLink
-          ).catch(err => console.error("Failed to send evaluation email:", err));
-      }
 
       return NextResponse.json(evaluation, { status: 201 });
     } catch (error: any) {
