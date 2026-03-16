@@ -5,6 +5,7 @@ export enum TaskPriority {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
   HIGH = 'HIGH',
+  FINAL = 'FINAL',
 }
 
 export enum TaskStatus {
@@ -86,6 +87,10 @@ const TaskSchema: Schema<ITask> = new Schema(
   }
 );
 
-const Task: Model<ITask> = mongoose.models.Task || mongoose.model<ITask>('Task', TaskSchema);
+if (mongoose.models.Task) {
+  delete mongoose.models.Task;
+}
+
+const Task: Model<ITask> = mongoose.model<ITask>('Task', TaskSchema);
 
 export default Task;

@@ -47,6 +47,12 @@ export class TaskController {
 
       const url = new URL(req.url);
       const assignedTo = url.searchParams.get('assignedTo');
+      const includeStatus = url.searchParams.get('includeStatus') === 'true';
+
+      if (includeStatus && user.role === UserRole.INTERN) {
+          const tasksWithStatus = await taskService.getInternTasksWithStatus(user._id.toString());
+          return NextResponse.json(tasksWithStatus, { status: 200 });
+      }
 
       const tasks = await taskService.getTasksForUser(
         user._id.toString(), 
